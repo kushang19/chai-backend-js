@@ -62,29 +62,40 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 };
 
 userSchema.methods.generateAccessToken = function() {
-   return jwt.sign(
-        {
-            _id: this.id,
-            email: this.email,
-            username: this.username,
-            fullname: this.fullname
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        {
-            expiresIn:  process.env.ACCESS_TOKEN_EXPIRY 
-        }
-)
+  try {
+     return jwt.sign(
+          {
+              _id: this.id,
+              email: this.email,
+              username: this.username,
+              fullname: this.fullname
+          },
+          process.env.ACCESS_TOKEN_SECRET,
+          {
+              expiresIn:  process.env.ACCESS_TOKEN_EXPIRY 
+          }
+  )
+  } catch (error) {
+    console.log("ACCESSTOKEN ERROR:: ", error);
+    
+  }
 }
-userSchema.methods.generateRefreshToken = function() {
+userSchema.methods.generateRefreshToken = async function() {
+  try{
     return jwt.sign(
         {
-            _id: this.id,
+            _id: this.id
         },
         process.env.REFRESH_TOKEN_SECRET,
         {
-            expiresIn:  process.env.REFRESH_TOKEN_SECRET 
+            expiresIn:  process.env.REFRESH_TOKEN_EXPIRY
         }
 )
+  }
+  catch(err){
+    console.log("REFRESHTOKEN ERROR:: ", err);
+    
+  }
 }
 
 export const User = mongoose.model("User", userSchema);
