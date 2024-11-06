@@ -6,21 +6,18 @@ const healthcheck = asyncHandler(async (req, res) => {
   try {
     //TODO: build a healthcheck response that simply returns the OK status as json with a message
 
-    // Simulate a health check failure or condition that causes an error
-
-    const serviceIsHealthy = false; // This is a placeholder; replace with real checks if needed.
+    const serviceIsHealthy = true; 
     if (!serviceIsHealthy) {
       console.log("ERROR:: XXXXXXXXXXXXXXXXXXX");
-      throw new ApiError(503, "Service Unavailable", [], "Service health check failed");
-      
+    return  res
+        .status(503)
+        .json( new ApiResponse( 503, { status: "Service Unavailable" }, "Service health check failed" ) );
     }
-    res
+   return res
       .status(200)
-      .json(
-        new ApiResponse(200, { status: "OK" }, "Service is running smoothly")
-      );
-  } catch (error) {
-    // If there's an error during the health check, return an ApiError
+      .json( new ApiResponse(200, { status: "OK" }, "Service is running smoothly") )
+  } 
+  catch (error) {
     throw new ApiError(500, error.message || "Internal Server Error");
   }
 });
